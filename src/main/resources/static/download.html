@@ -1,0 +1,38 @@
+<html>
+<head>
+<title>
+Download
+</title>
+<script
+			  src="https://code.jquery.com/jquery-3.2.1.js"
+			  integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
+			  crossorigin="anonymous"></script>
+			  <script>
+			  function generateFileLink(){
+				  var file=getFileName();
+			  $.ajax({
+				  url:"/file/encrypt",
+				  data:{"filename":file},
+				  type:'POST',
+				  success:function(data){
+					  setEncryptedName(data);
+				  }
+			  });
+			  }
+			  function getFileName(){
+				 return $("#file_to_download").val();
+			  }
+			  function setEncryptedName(data){
+				  var url="/file/download/"+data
+				  $("#file_download_link").attr("href",url);
+				  console.log("key :"+data);
+			  }
+			  </script>
+</head>
+<body>
+
+<input type="text" name="filename" id="file_to_download">
+<input type="button" name="generate" id="generate_button" onclick="generateFileLink();">
+<a href="#" download id="file_download_link">Download File</a>
+</body>
+</html>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="assets/css/main.css" />
+	<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+<script
+  src="https://code.jquery.com/jquery-3.2.1.js"
+  integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
+  crossorigin="anonymous"></script>
+<script>
+
+var metaData;
+var ResultentData;
+var selectedElement;
+function fetchData(uuid){
+	globalResult=uuid
+$.ajax({
+			type :"GET",
+			url: "/file/metadata/"+uuid,
+			complete: function(result){
+				processAllData(JSON.parse(result.responseText));
+			}
+    });
+}
+
+	var globalResult; 
+function processAllData(resultantData){
+	globalResult=resultantData;
+	for(var i=0;i<resultantData.length;i++){
+		processEachRow(resultantData[i])
+	}
+}
+
+function initialize(){
+	var baseHash;
+$.ajax({
+	type:"GET",
+	url:"/file/init/metadata",
+	async:false,
+	complete: function(result){
+		//globalResult=result.responseText;
+		//console.log(result.responseText);
+		baseHash=result.responseText;
+	}
+});	
+return baseHash;
+}
+
+
+function processEachRow(rowElement){
+	ResultentData=rowElement;
+	$("#content-holder").append(createDisplayElement(rowElement));
+}
+
+function createDisplayElement(element){
+	var htmlContent="";
+	if(element.isDirectory){
+		htmlContent="<a href='#' download><div class='select-box' onclick='loadData(\""+element.uuidString+"\")'>"+element.displayName+"</div></a>";
+	}else{
+		htmlContent="<a href='/file/download/"+element.uuidString+"' download><div class='select-box' title='"+element.displayName+"' dataValue='"+element.uuidString+"' formatValue='"+element.type+"'>"+element.displayName+"</div></a>";
+	}
+	return htmlContent;
+}
+
+function loadData(uuid){
+	$("#content-holder").html("");
+	fetchData(uuid);
+	setLevelUp(uuid);
+}
+
+$(document).ready(function(){
+	var baseHash=initialize();
+	fetchData(baseHash);
+	setRoot(baseHash);
+});
+
+function setRoot(rootUuid){
+	$("#root-director").attr('onclick','loadData("'+rootUuid+'")');
+}
+
+function setLevelUp(levelUpUuid){
+	$("#level-up").attr('onclick','loadData("'+levelUpUuid+'")');
+}
+
+</script>
+  
+<meta charset="ISO-8859-1">
+<title>List Of Songs</title>
+</head>
+<body>
+<div id="trace-back">
+<a href="#" id="root-director">./</a><br><br>
+<a href="#" id="level-up">../</a>
+</div>
+<div id="content-holder">
+</div>
+	<div id="wrapper">
+
+			<div id="main">
+				<div id="reel">
+
+					<!-- Header Item -->
+
+						<div id="header" class="item" data-width="400">
+							<div class="inner">
+								<h1>Root</h1>
+								<p>Go To Root Folder<br />
+								template by HTML5 UP</p>
+							</div>
+						</div>
+
+					<!-- Thumb Items -->
+						<div id="main-content">
+						<article class="item thumb" data-width="282">
+							<h2>You really got me</h2>
+							<a href="images/fulls/01.jpg" class="image"><img src="images/thumbs/01.jpg" alt=""></a>
+						</article>
+						</div>
+
+	</div>
+			</div>
+
+			<div id="footer">
+				<div class="left">
+					<p>This is <strong>Parallelism</strong>, a responsive portfolio site template by <a href="http://html5up.net">HTML5 UP</a>. Free for personal<br />
+					and commercial use under the <a href="http://html5up.net/license">Creative Commons Attribution</a> license.</p>
+				</div>
+				<div class="right">
+					<ul class="contact">
+						<li><a href="#" class="icon fa-twitter"><span class="label">Twitter</span></a></li>
+						<li><a href="#" class="icon fa-instagram"><span class="label">Instagram</span></a></li>
+						<li><a href="#" class="icon fa-facebook"><span class="label">Facebook</span></a></li>
+						<li><a href="#" class="icon fa-dribbble"><span class="label">Dribbble</span></a></li>
+						<li><a href="#" class="icon fa-pinterest"><span class="label">Pinterest</span></a></li>
+						<li><a href="#" class="icon fa-envelope"><span class="label">Email</span></a></li>
+					</ul>
+					<ul class="copyright">
+						<li>&copy; Untitled</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+					</ul>
+				</div>
+			</div>
+
+		</div>
+</div>
+</body>
+<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.poptrox.min.js"></script>
+			<script src="assets/js/skel.min.js"></script>
+			<script src="assets/js/skel-viewport.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<!--[if lte IE 8]><script src="assets/js/ie/respond.min.js"></script><![endif]-->
+			<script src="assets/js/main.js"></script>
+</html>
